@@ -1,7 +1,7 @@
 /* Color customization */
 :root {
-  --primary: #f9c412;
-  --primary-dark: #e7bf60;
+  --primary: #4ee3f7;
+  --primary-dark: #6074e7;
 }
 
 .test-dead-code-elimination-sentinel {
@@ -108,6 +108,7 @@ header aside {
   transform: translate(-100vw, 0);
   will-change: transform;
   pointer-events: none;
+  opacity: 0.25;
 }
 
 #posts li {
