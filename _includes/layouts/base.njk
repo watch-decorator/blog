@@ -27,8 +27,6 @@
       <meta property="og:description" content="{{ desc | escape }}">
     {% endif %}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@{{ metadata.author.twitterHandle }}">
-    <meta name="twitter:creator" content="@{{ metadata.author.twitterHandle }}">
     {% if image %}
       <meta property="og:image" content="{{ image | absoluteUrl(metadata.url) }}">
     {% endif %}
