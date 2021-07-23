@@ -1,7 +1,86 @@
 /* Color customization */
+
+/* Credit to https://github.com/alexandersandberg/theme-switcher */
+
 :root {
-  --primary: #4ee3f7;
-  --primary-dark: #6074e7;
+  /* Light mode */
+  --light-switch-shadow: #373d4e;
+  --light-switch-icon: "🌚";
+  --light-switch-text: "Dark";
+  --light-text: #222430;
+  --light-bg: #f7f7f7;
+  --light-theme: #4ee3f7;
+  --light-theme-dark: #6074e7;
+
+  /* Dark mode */
+  --dark-switch-shadow: #fce477;
+  --dark-switch-icon: "🌝";
+  --dark-switch-text: "Light";
+  --dark-text: #f7f7f7;
+  --dark-bg: #222430;
+  --dark-theme: #bd93f9;
+
+  /* Default mode */
+  --switch-shadow-color: var(--light-switch-shadow);
+  --switch-icon: var(--light-switch-icon);
+  --switch-text: var(--light-switch-text);
+  --text-color: var(--light-text);
+  --bg-color: var(--light-bg);
+  --theme-color: var(--light-theme);
+
+  --primary: var(--light-theme);
+  --primary-dark: var(--light-theme-dark);
+}
+
+/* Switched mode */
+.theme-switch:checked ~ #page {
+  --switch-shadow-color: var(--dark-switch-shadow);
+  --switch-icon: var(--dark-switch-icon);
+  --switch-text: var(--dark-switch-text);
+  --text-color: var(--dark-text);
+  --bg-color: var(--dark-bg);
+  --theme-color: var(--dark-theme);
+}
+
+.theme-switch { /* Hides the checkbox */
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+.switch-label {
+  cursor: pointer;
+  display: inline;
+  opacity: 0.9;
+}
+
+.switch-label::before {
+  content: var(--switch-icon);
+  /* font-size: 40px; */
+  transition: text-shadow .2s;
+}
+
+.switch-label::after {
+  align-self: center;
+  content: var(--switch-text);
+  color: var(--switch-shadow-color);
+  /* font-size: 28px; */
+  /* line-height: 40px; */
+  opacity: 0;
+  padding-left: 15px;
+  transition: opacity .2s;
+}
+
+.theme-switch:focus ~ #page .switch-label::before,
+.switch-label:hover::before {
+  text-shadow: 0 0 15px var(--switch-shadow-color);
+}
+
+.theme-switch:focus ~ #page .switch-label::after,
+.switch-label:hover::after {
+  opacity: 0.9;
 }
 
 .test-dead-code-elimination-sentinel {
@@ -438,6 +517,15 @@ html {
 body {
   margin: 0;
 }
+
+#page {
+  background: var(--bg-color);
+  color: var(--text-color);
+  font: normal 125%/1.4 Georgia, 'Times New Roman', Times, serif;
+  min-height: 100%;
+  transition: color .2s, background-color .2s;
+}
+
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
