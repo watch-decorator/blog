@@ -1,7 +1,5 @@
 /* Color customization */
 
-/* Credit to https://github.com/alexandersandberg/theme-switcher */
-
 :root {
   --switch-shadow-color: #373d4e;
   --switch-icon: "🌚";
@@ -12,6 +10,32 @@
 
   --primary: var(--theme-color);
   --primary-dark: #5e26f7;
+}
+
+:root[colorscheme-mode="dark"] {
+  --switch-shadow-color: #0e0d0c;
+  --switch-icon: "🌝";
+  --switch-text: "Light?";
+  --text-color: #e5e5e5;
+  --bg-color: #181818;
+  --theme-color: #85f1ff;
+
+  --primary: var(--theme-color);
+  --primary-dark: #1dddf7;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([colorscheme-mode="dark"]) {
+    --switch-shadow-color: #373d4e;
+    --switch-icon: "🌚";
+    --switch-text: "Dark?";
+    --text-color: #222222;
+    --bg-color: #f7f7f7;
+    --theme-color: #855df1;
+  
+    --primary: var(--theme-color);
+    --primary-dark: #5e26f7;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,18 +50,6 @@
     --primary: var(--theme-color);
     --primary-dark: #1dddf7;
   }
-}
-
-:root:not([colorscheme-mode="light"]) {
-  --switch-shadow-color: #0e0d0c;
-  --switch-icon: "🌝";
-  --switch-text: "Light?";
-  --text-color: #e5e5e5;
-  --bg-color: #181818;
-  --theme-color: #85f1ff;
-
-  --primary: var(--theme-color);
-  --primary-dark: #1dddf7;
 }
 
 .no-js .colorscheme-toggle-label {
