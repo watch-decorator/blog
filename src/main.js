@@ -19,38 +19,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- function test_localStorage() {
-  var test = 'test';
-  try {
-      localStorage.setItem(test, test);
-      localStorage.removeItem(test);
-      return true;
-  } catch(e) {
-      return false;
-  }
-}
-
-const supportsLocalStorage = test_localStorage();
-
-const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
-const colorscheme_mode_key = "colorscheme-mode";
-
-function init_colorscheme_mode() {
-  const docElm = document.documentElement;
-  console.log(docElm.getAttribute(colorscheme_mode_key));
-  const prefer_dark = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  let preferred_mode = prefer_dark ? colorscheme_dark : colorscheme_light;
-  console.log(preferred_mode);
-  if (supportsLocalStorage) {
-    console.log(localStorage);
-    const mode = localStorage.getItem(colorscheme_mode_key);
-    preferred_mode = mode || preferred_mode;
-  }
-  console.log(document.body.style.transition);
-  docElm.setAttribute(colorscheme_mode_key, preferred_mode);
-}
-init_colorscheme_mode();
-
 const exposed = {};
 if (location.search) {
   var a = document.createElement("a");
@@ -251,17 +219,35 @@ document.body.addEventListener(
   /* capture */ "true"
 );
 
-expose("colorscheme-toggle", (_)=> {
-  console.log(supportsLocalStorage);
+function toggleColorscheme(_) {
+  const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
+  const colorscheme_mode_key = "colorscheme-mode";
   const docElm = document.documentElement;
   
   const mode_curr = docElm.getAttribute(colorscheme_mode_key);
-
-  console.log(mode_curr);
-
-  const mode_next = (mode_curr && mode_curr == colorscheme_light) ? colorscheme_dark : colorscheme_light;
-  if (supportsLocalStorage) {
-    localStorage.setItem(colorscheme_mode_key, mode_next);
-  }
+  const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
   docElm.setAttribute(colorscheme_mode_key, mode_next);
-});
+
+  if ("supportsLocalStorage" in toggleColorscheme) {
+    if (toggleColorscheme.supportsLocalStorage) {
+      localStorage.setItem(colorscheme_mode_key, mode_next);
+    }
+  } else {
+    let storage = undefined;
+    let fail = undefined;
+    let uid = undefined;
+    try {
+      uid = new Date;
+      (storage = window.localStorage).setItem(uid, uid);
+      fail = storage.getItem(uid) != uid;
+      storage.removeItem(uid);
+      fail && (storage = false);
+    } catch (exception) {}
+    toggleColorscheme.supportsLocalStorage = toggleColorscheme.supportsLocalStorage || storage;
+    if (storage) {
+      storage.setItem(colorscheme_mode_key, mode_next);
+    }
+  }
+}
+
+expose("colorscheme-toggle", toggleColorscheme);
