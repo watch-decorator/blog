@@ -48,6 +48,7 @@
     {% if googleanalytics %}
       <script async defer src="{{ "/js/cached.js" | addHash }}"></script>
     {% endif %}
+    <script csp-hash> (function (){const docElm=document.documentElement; const modeKey="colorscheme-mode"; let mode=undefined; try{mode=window.localStorage.getItem(modeKey); if (mode){docElm.setAttribute(modeKey, mode);}else{mode=((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? "light" : "dark"); docElm.setAttribute(modeKey, mode); window.localStorage.setItem(modeKey, mode);}}catch (exception){mode=((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? "light" : "dark"); docElm.setAttribute(modeKey, mode);}})()</script>
     <!-- Notably iOS UAs also contain Mac OS X -->
     <script csp-hash>if (/Mac OS X/.test(navigator.userAgent))document.documentElement.classList.add('apple')
     </script>
@@ -57,7 +58,9 @@
     <header>
       <nav>
         <div id="nav">
-          <h1><a href="{{ '/' | url }}" title="Homepage">{{ metadata.title }}</a></h1>
+          <h1><a href="{{ '/' | url }}" title="Homepage">{{ metadata.title }}</a>
+          <label class="colorscheme-toggle-label" id="colorscheme-toggle" on-click="colorscheme-toggle"></label>
+          </h1>
           {#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
           {%- for entry in collections.all | eleventyNavigation %}
             <a href="{{ entry.url | url }}">{{ entry.title }}</a>
@@ -91,7 +94,6 @@
     <footer>
       <a href="/about/">{{ metadata.author.name }}</a>
     </footer>
-
     <!-- Current page: {{ page.url | url }} -->
   </body>
 </html>

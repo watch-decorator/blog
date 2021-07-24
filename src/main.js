@@ -218,3 +218,36 @@ document.body.addEventListener(
   },
   /* capture */ "true"
 );
+
+function toggleColorscheme(_) {
+  const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
+  const colorscheme_mode_key = "colorscheme-mode";
+  const docElm = document.documentElement;
+  
+  const mode_curr = docElm.getAttribute(colorscheme_mode_key);
+  const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
+  docElm.setAttribute(colorscheme_mode_key, mode_next);
+
+  if ("supportsLocalStorage" in toggleColorscheme) {
+    if (toggleColorscheme.supportsLocalStorage) {
+      localStorage.setItem(colorscheme_mode_key, mode_next);
+    }
+  } else {
+    let storage = undefined;
+    let fail = undefined;
+    let uid = undefined;
+    try {
+      uid = new Date;
+      (storage = window.localStorage).setItem(uid, uid);
+      fail = storage.getItem(uid) != uid;
+      storage.removeItem(uid);
+      fail && (storage = false);
+    } catch (exception) {}
+    toggleColorscheme.supportsLocalStorage = toggleColorscheme.supportsLocalStorage || storage;
+    if (storage) {
+      storage.setItem(colorscheme_mode_key, mode_next);
+    }
+  }
+}
+
+expose("colorscheme-toggle", toggleColorscheme);
