@@ -219,35 +219,49 @@ document.body.addEventListener(
   /* capture */ "true"
 );
 
-function toggleColorscheme(_) {
-  const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
-  const colorscheme_mode_key = "colorscheme-mode";
-  const docElm = document.documentElement;
-  
-  const mode_curr = docElm.getAttribute(colorscheme_mode_key);
-  const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
-  docElm.setAttribute(colorscheme_mode_key, mode_next);
+const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
+const colorscheme_mode_key = "colorscheme-mode";
 
-  if ("supportsLocalStorage" in toggleColorscheme) {
-    if (toggleColorscheme.supportsLocalStorage) {
-      localStorage.setItem(colorscheme_mode_key, mode_next);
+function setColorscheme(mode) {
+  const docElm = document.documentElement;
+  docElm.setAttribute(colorscheme_mode_key, mode);
+  
+  if ("supportsLocalStorage" in setColorscheme) {
+    if (setColorscheme.supportsLocalStorage) {
+      localStorage.setItem(colorscheme_mode_key, mode);
     }
   } else {
     let storage = undefined;
     let fail = undefined;
-    let uid = undefined;
+    const uid = "test";
     try {
-      uid = new Date;
       (storage = window.localStorage).setItem(uid, uid);
       fail = storage.getItem(uid) != uid;
       storage.removeItem(uid);
       fail && (storage = false);
     } catch (exception) {}
-    toggleColorscheme.supportsLocalStorage = toggleColorscheme.supportsLocalStorage || storage;
+    setColorscheme.supportsLocalStorage = setColorscheme.supportsLocalStorage || storage;
     if (storage) {
-      storage.setItem(colorscheme_mode_key, mode_next);
+      storage.setItem(colorscheme_mode_key, mode);
     }
   }
 }
 
+function toggleColorscheme(_) {
+  const docElm = document.documentElement;
+  
+  const mode_curr = docElm.getAttribute(colorscheme_mode_key);
+  const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
+  setColorscheme(mode_next);
+}
 expose("colorscheme-toggle", toggleColorscheme);
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener(
+  "change", 
+  e => e.matches && setColorscheme(colorscheme_dark)
+);
+
+window.matchMedia("(prefers-color-scheme: light)").addEventListener(
+  "change", 
+  e => e.matches && setColorscheme(colorscheme_light)
+);
