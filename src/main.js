@@ -40,14 +40,13 @@ expose("tweet", tweet);
 
 function share(anchor) {
   var url = anchor.getAttribute("href");
-  event.preventDefault();
   if (navigator.share) {
     navigator.share({
       url: url,
     });
   } else if (navigator.clipboard) {
     navigator.clipboard.writeText(url);
-    message("Article URL copied to clipboard.");
+    message("Blog site URL copied to clipboard.");
   } else {
     tweet_(url);
   }
@@ -93,43 +92,6 @@ document.documentElement.addEventListener("touchstart", prefetch, {
   passive: true,
 });
 
-const GA_ID = document.documentElement.getAttribute("ga-id");
-window.ga =
-  window.ga ||
-  function () {
-    if (!GA_ID) {
-      return;
-    }
-    (ga.q = ga.q || []).push(arguments);
-  };
-ga.l = +new Date();
-ga("create", GA_ID, "auto");
-ga("set", "transport", "beacon");
-var timeout = setTimeout(
-  (onload = function () {
-    clearTimeout(timeout);
-    ga("send", "pageview");
-  }),
-  1000
-);
-
-var ref = +new Date();
-function ping(event) {
-  var now = +new Date();
-  if (now - ref < 1000) {
-    return;
-  }
-  ga("send", {
-    hitType: "event",
-    eventCategory: "page",
-    eventAction: event.type,
-    eventLabel: Math.round((now - ref) / 1000),
-  });
-  ref = now;
-}
-addEventListener("pagehide", ping);
-addEventListener("visibilitychange", ping);
-
 /**
  * Injects a script into document.head
  * @param {string} src path of script to be injected in <head>
@@ -169,30 +131,17 @@ addEventListener(
     if (!button) {
       return;
     }
-    ga("send", {
-      hitType: "event",
-      eventCategory: "button",
-      eventAction: button.getAttribute("aria-label") || button.textContent,
-    });
   },
   true
 );
-var selectionTimeout;
+
 addEventListener(
   "selectionchange",
   function () {
-    clearTimeout(selectionTimeout);
     var text = String(document.getSelection()).trim();
     if (text.split(/[\s\n\r]+/).length < 3) {
       return;
     }
-    selectionTimeout = setTimeout(function () {
-      ga("send", {
-        hitType: "event",
-        eventCategory: "selection",
-        eventAction: text,
-      });
-    }, 2000);
   },
   true
 );
@@ -268,4 +217,48 @@ document.body.addEventListener(
     e.target.style.backgroundImage = "none";
   },
   /* capture */ "true"
+);
+
+const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
+const colorscheme_mode_key = "colorscheme-mode";
+
+function setColorscheme(mode) {
+  document.documentElement.setAttribute(colorscheme_mode_key, mode);
+  
+  if ("supportsLocalStorage" in setColorscheme) {
+    if (setColorscheme.supportsLocalStorage) {
+      localStorage.setItem(colorscheme_mode_key, mode);
+    }
+  } else {
+    let storage = undefined;
+    let fail = undefined;
+    const uid = "test";
+    try {
+      (storage = window.localStorage).setItem(uid, uid);
+      fail = storage.getItem(uid) != uid;
+      storage.removeItem(uid);
+      fail && (storage = false);
+    } catch (exception) {}
+    setColorscheme.supportsLocalStorage = setColorscheme.supportsLocalStorage || storage;
+    if (storage) {
+      storage.setItem(colorscheme_mode_key, mode);
+    }
+  }
+}
+
+function toggleColorscheme(_) {
+  const mode_curr = document.documentElement.getAttribute(colorscheme_mode_key);
+  const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
+  setColorscheme(mode_next);
+}
+expose("colorscheme-toggle", toggleColorscheme);
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener(
+  "change", 
+  e => e.matches && setColorscheme(colorscheme_dark)
+);
+
+window.matchMedia("(prefers-color-scheme: light)").addEventListener(
+  "change", 
+  e => e.matches && setColorscheme(colorscheme_light)
 );
