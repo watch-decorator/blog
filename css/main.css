@@ -98,6 +98,14 @@
   color: red;
 }
 
+abbr {
+  cursor: help;
+}
+
+del {
+  text-decoration: line-through;
+}
+
 /*
   Make image rasterization lazy. This means that e.g. the cost of the
   blurry placeholder is never paid if images load before entering
@@ -945,13 +953,13 @@ dt {
   }
 }
 html {
-  font-family: Inter UI, sans-serif;
-  --font-family: Inter UI, sans-serif;
+  font-family: Inter UI, PingFang SC, Verdana, Helvetica Neue, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+  --font-family: Inter UI, PingFang SC, Verdana, Helvetica Neue, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
 }
 @supports (font-variation-settings: normal) {
   html {
-    font-family: Inter UI var alt, sans-serif;
-    --font-family: Inter UI var alt, sans-serif;
+    font-family: Inter UI var alt, PingFang SC, Verdana, Helvetica Neue, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+    --font-family: Inter UI var alt, PingFang SC, Verdana, Helvetica Neue, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
   }
 }
 form {
@@ -1382,4 +1390,8 @@ a {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+.serif {
+  font-family: Palatino, Optima, Georgia, serif;
 }

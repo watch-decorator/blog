@@ -223,8 +223,7 @@ const [colorscheme_light, colorscheme_dark] = ["light", "dark"];
 const colorscheme_mode_key = "colorscheme-mode";
 
 function setColorscheme(mode) {
-  const docElm = document.documentElement;
-  docElm.setAttribute(colorscheme_mode_key, mode);
+  document.documentElement.setAttribute(colorscheme_mode_key, mode);
   
   if ("supportsLocalStorage" in setColorscheme) {
     if (setColorscheme.supportsLocalStorage) {
@@ -248,9 +247,7 @@ function setColorscheme(mode) {
 }
 
 function toggleColorscheme(_) {
-  const docElm = document.documentElement;
-  
-  const mode_curr = docElm.getAttribute(colorscheme_mode_key);
+  const mode_curr = document.documentElement.getAttribute(colorscheme_mode_key);
   const mode_next = (mode_curr && mode_curr === colorscheme_light) ? colorscheme_dark : colorscheme_light;
   setColorscheme(mode_next);
 }
